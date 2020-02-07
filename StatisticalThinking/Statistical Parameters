@@ -1,0 +1,170 @@
+#ecdf function
+def ecdf(data):
+    """Compute ECDF for a one-dimensional array of measurements."""
+    # Number of data points: n
+    n = len(data)
+
+    # x-data for the ECDF: x
+    x = np.sort(data)
+
+    # y-data for the ECDF: y
+    y = np.arange(1, n+1) / n
+
+    return x, y
+
+-----------------------------------------------------------------------------------
+#ecdf
+# Compute ECDF for versicolor data: x_vers, y_vers
+x_vers, y_vers = ecdf(versicolor_petal_length)
+
+# Generate plot
+x = np.sort(versicolor_petal_length)
+y = np.arange(1, len(x)+1) / len(x)
+_=plt.plot(x,y,marker = '.', linestyle = 'none')
+
+# Label the axes
+_=plt.xlabel('petal length (cm)')
+_=plt.ylabel('ECDF')
+
+# Display the plot
+plt.show()
+
+-----------------------------------------------------------------------------------
+#compare several ecdf functions
+# Compute ECDFs
+x_set, y_set = ecdf(setosa_petal_length)
+x_vers, y_vers = ecdf(versicolor_petal_length)
+x_virg, y_virg = ecdf(virginica_petal_length)
+
+# Plot all ECDFs on the same plot
+_ = plt.plot(x_set, y_set, marker='.', linestyle='none')
+_ = plt.plot(x_vers, y_vers, marker='.', linestyle='none')
+_ = plt.plot(x_virg, y_virg, marker='.', linestyle='none')
+
+# Annotate the plot
+_ = plt.legend(('setosa', 'versicolor', 'virginica'), loc='lower right')
+_ = plt.xlabel('petal length (cm)')
+_ = plt.ylabel('ECDF')
+
+# Display the plot
+plt.show()
+
+-----------------------------------------------------------------------------------
+#computing percentiles
+# Specify array of percentiles: percentiles
+percentiles = np.array([2.5, 25, 50, 75, 97.5])
+
+# Compute percentiles: ptiles_vers
+ptiles_vers = np.percentile(versicolor_petal_length, percentiles)
+
+# Print the result
+print(ptiles_vers)
+
+-----------------------------------------------------------------------------------
+#comparing percentiles to ecdf# Plot the ECDF
+_ = plt.plot(x_vers, y_vers, '.')
+_ = plt.xlabel('petal length (cm)')
+_ = plt.ylabel('ECDF')
+
+# Overlay percentiles as red diamonds.
+_ = plt.plot(ptiles_vers, percentiles/100, marker='D', color='red',
+         linestyle='none')
+
+# Show the plot
+plt.show()
+
+-----------------------------------------------------------------------------------
+#creating boxplot
+# Create box plot with Seaborn's default settings
+_=sns.boxplot(x='species', y='petal length (cm)', data = df)
+
+# Label the axes
+_=plt.xlabel('species')
+_=plt.ylabel('petal length (cm)')
+
+
+# Show the plot
+plt.show()
+
+-----------------------------------------------------------------------------------
+# compute variance
+# Array of differences to mean: differences
+differences = versicolor_petal_length - np.mean(versicolor_petal_length)
+
+# Square the differences: diff_sq
+diff_sq = differences**2
+
+# Compute the mean square difference: variance_explicit
+variance_explicit = np.mean(diff_sq)
+
+# Compute the variance using NumPy: variance_np
+variance_np = np.var(versicolor_petal_length)
+
+# Print the results
+print(variance_explicit, variance_np)
+
+-----------------------------------------------------------------------------------
+#compute standard deviation two ways
+# Compute the variance: variance
+variance = np.var(versicolor_petal_length)
+
+# Print the square root of the variance
+print(np.sqrt(variance))
+
+# Print the standard deviation
+print(np.std(versicolor_petal_length))
+----
+#create scatter plot# Make a scatter plot
+_=plt.plot(versicolor_petal_length, versicolor_petal_width, marker = '.', linestyle = 'none')
+
+# Label the axes
+_=plt.xlabel('petal length (cm)')
+_=plt.ylabel('petal width (cm)')
+
+# Show the result
+plt.show()
+----
+#covariance and extract
+# Compute the covariance matrix: covariance_matrix
+covariance_matrix = np.cov(versicolor_petal_length,versicolor_petal_width)
+
+# Print covariance matrix
+print(covariance_matrix)
+
+# Extract covariance of length and width of petals: petal_cov
+petal_cov=covariance_matrix[0,1]
+
+# Print the length/width covariance
+print(petal_cov)
+----
+#pearson correlation
+def pearson_r(x, y):
+    """Compute Pearson correlation coefficient between two arrays."""
+    # Compute correlation matrix: corr_mat
+    corr_mat = np.corrcoef(x, y)
+
+    # Return entry [0,1]
+    return corr_mat[0,1]
+
+# Compute Pearson correlation coefficient for I. versicolor
+r = pearson_r(versicolor_petal_width, versicolor_petal_length)
+
+# Print the result
+print(r)
+-----
+# random number generator
+# Seed the random number generator
+np.random.seed(42)
+
+# Initialize random numbers: random_numbers
+random_numbers = np.empty(100000)
+
+# Generate random numbers by looping over range(100000)
+for i in range(100000):
+    random_numbers[i] = np.random.random()
+
+# Plot a histogram
+_ = plt.hist(random_numbers)
+
+# Show the plot
+plt.show()
