@@ -1,0 +1,92 @@
+--dense layer
+# From previous step
+bias1 = Variable(1.0)
+weights1 = Variable(ones((3, 2)))
+product1 = matmul(borrower_features, weights1)
+dense1 = keras.activations.sigmoid(product1 + bias1)
+
+# Initialize bias2 and weights2
+bias2 = Variable(1.0)
+weights2 = Variable(ones((2, 1)))
+
+# Perform matrix multiplication of dense1 and weights2
+product2 = matmul(dense1, weights2)
+
+# Apply activation to product2 + bias2 and print the prediction
+prediction = keras.activations.sigmoid(product2 + bias2)
+print('\n prediction: {}'.format(prediction.numpy()[0,0]))
+print('\n actual: 1')
+
+-------------------------------------------------------
+
+--10 input, 7 layer, 3 layer 1 output
+# Define the first dense layer
+dense1 = keras.layers.Dense(7, activation='sigmoid')(borrower_features)
+
+# Define a dense layer with 3 output nodes
+dense2 = keras.layers.Dense(3, activation = 'sigmoid')(dense1)
+
+# Define a dense layer with 1 output node
+predictions = keras.layers.Dense(1, activation ='sigmoid')(dense2)
+
+# Print the shapes of dense1, dense2, and predictions
+print('\n shape of dense1: ', dense1.shape)
+print('\n shape of dense2: ', dense2.shape)
+print('\n shape of predictions: ', predictions.shape)
+
+-----------------------------------------------------------
+--binary classification problem 
+
+# Construct input layer from features
+inputs = constant(bill_amounts, float32)
+
+# Define first dense layer
+dense1 = keras.layers.Dense(3, activation='relu')(inputs)
+
+# Define second dense layer
+dense2 = keras.layers.Dense(2, activation='relu')(dense1)
+
+# Define output layer
+outputs = keras.layers.Dense(1, activation='sigmoid')(dense2)
+
+# Print error for first five examples
+error = default[:5] - outputs.numpy()[:5]
+print(error)
+
+---------------------------------------------------------------------
+--multiclass classification problem
+
+# Construct input layer from borrower features
+inputs = constant(borrower_features, float32)
+
+# Define first dense layer
+dense1 = keras.layers.Dense(10, activation='sigmoid')(inputs)
+
+# Define second dense layer
+dense2 = keras.layers.Dense(8, activation='relu')(dense1)
+
+# Define output layer
+outputs = keras.layers.Dense(6, activation='softmax')(dense2)
+
+# Print first five predictions
+print(outputs.numpy()[:5])
+
+-----------------------------------------------------------------
+
+--avoiding local minima => set momentum
+
+# Initialize x_1 and x_2
+x_1 = Variable(0.05,float32)
+x_2 = Variable(0.05,float32)
+
+# Define the optimization operation for opt_1 and opt_2
+opt_1 = keras.optimizers.RMSprop(learning_rate=0.01, momentum=0.99) -- good
+opt_2 = keras.optimizers.RMSprop(learning_rate=0.01, momentum=0.00) -- bad
+
+for j in range(100):
+	opt_1.minimize(lambda: loss_function(x_1), var_list=[x_1])
+    # Define the minimization operation for opt_2
+	opt_2.minimize(lambda: loss_function(x_2), var_list=[x_2])
+
+# Print x_1 and x_2 as numpy arrays
+print(x_1.numpy(), x_2.numpy())
