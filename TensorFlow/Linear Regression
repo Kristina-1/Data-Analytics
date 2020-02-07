@@ -1,0 +1,60 @@
+-- linear regression 
+
+# Define a linear regression model
+def linear_regression(intercept, slope, features = size_log):
+	return intercept + features*slope
+
+# Set loss_function() to take the variables as arguments
+def loss_function(intercept, slope, features = size_log, targets = price_log):
+	# Set the predicted values
+	predictions = linear_regression(intercept, slope, features)
+    
+    # Return the mean squared error loss
+	return keras.losses.mse(targets, predictions)
+
+# Compute the loss for different slope and intercept values
+print(loss_function(0.1, 0.1).numpy())
+print(loss_function(0.1, 0.5).numpy())
+
+-----------------------------------------------------------------------------
+-- train linear model
+# Initialize an adam optimizer
+opt = keras.optimizers.Adam(0.5)
+
+for j in range(100):
+	# Apply minimize, pass the loss function, and supply the variables
+	opt.minimize(lambda: loss_function(intercept, slope), var_list=[intercept, slope])
+
+	# Print every 10th value of the loss
+	if j % 10 == 0:
+		print(loss_function(intercept, slope).numpy())
+
+# Plot data and regression line
+plot_results(intercept, slope)
+
+otice that we printed loss_function(intercept, slope) every 10th execution 
+for 100 executions. Each time, the loss got closer to the minimum as the 
+optimizer moved the slope and intercept parameters closer to their optimal values.
+
+-----------------------------------------------------------------------------
+--multiple linear model
+# Define the linear regression model
+def linear_regression(params, feature1 = size_log, feature2 = bedrooms):
+	return params[0] + feature1*params[1] + feature2*params[2]
+
+# Define the loss function
+def loss_function(params, targets = price_log, feature1 = size_log, feature2 = bedrooms):
+	# Set the predicted values
+	predictions = linear_regression(params, feature1, feature2)
+  
+	# Use the mean absolute error loss
+	return keras.losses.mae(targets, predictions)
+
+# Define the optimize operation
+opt = keras.optimizers.Adam()
+
+# Perform minimization and print trainable variables
+for j in range(10):
+	opt.minimize(lambda: loss_function(params), var_list=[params])
+	print_results(params)
+	
